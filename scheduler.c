@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <conio.h>
 
 struct PCB
 {
@@ -16,7 +17,7 @@ int quantum;
 
 void readFile();
 void releaseMemory();
-char * tokenizer(char*, int);
+//char * tokenizer(char*, int);
 void genLinkedList(int, int, int, int);
 
 //Funcion para debug
@@ -98,13 +99,11 @@ void releaseMemory()
 
     while (actual != NULL)
     {
+
         aux_free = actual;
         actual = actual->next;
 
         free(aux_free);
-
-        if(actual == NULL)
-            free(aux_free);
     }
 
     first = NULL;
@@ -114,35 +113,35 @@ void releaseMemory()
     new = NULL;
 }
 
-char* tokenizer(char * num, int quantum_flag)
-{
-    char * token, *sveptr;
-    int digit;
-
-    /*if(quantum_flag == 3)//guardamos el valor del quantum
-    {
-        token = strtok(num," ");
-        digit = (int)*token - 48;
-        quantum = digit;
-        printf("quantum: %d\n\n", quantum );
-    }
-    else
-    {*/
-          token = strtok_r(num," ", &sveptr);
-          digit = (int)*token - 48;
-          printf("%d\n", digit);
-          while (token != NULL)
-          {
-
-              token = strtok_r(NULL," ", &sveptr);
-              digit = (int)*token - 48;
-              printf("%d\n", digit);
-
-          }
-    //}
-
-    return sveptr;
-}
+// char* tokenizer(char * num, int quantum_flag)
+// {
+//     char * token, *sveptr;
+//     int digit;
+//
+//     /*if(quantum_flag == 3)//guardamos el valor del quantum
+//     {
+//         token = strtok(num," ");
+//         digit = (int)*token - 48;
+//         quantum = digit;
+//         printf("quantum: %d\n\n", quantum );
+//     }
+//     else
+//     {*/
+//           token = strtok_r(num," ", &sveptr);
+//           digit = (int)*token - 48;
+//           printf("%d\n", digit);
+//           while (token != NULL)
+//           {
+//
+//               token = strtok_r(NULL," ", &sveptr);
+//               digit = (int)*token - 48;
+//               printf("%d\n", digit);
+//
+//           }
+//     //}
+//
+//     return sveptr;
+// }
 
 void genLinkedList(int procces_id, int arrival_time, int cpu_burst, int priority)
 {
@@ -183,7 +182,6 @@ void showLinkedList()
             printf("priority: %d\n\n", actual->priority);
             actual = actual->next;
         }
-        system("pause");
     }
 }
 
