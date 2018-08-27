@@ -17,10 +17,8 @@ int quantum;
 
 void readFile();
 void releaseMemory();
-//char * tokenizer(char*, int);
 void genLinkedList(int, int, int, int);
 
-//Funcion para debug
 void showLinkedList();
 
 int main()
@@ -43,10 +41,7 @@ void readFile()
       int contador = 0;
 
       archivo = fopen("input.txt", "r");
-      // int n = (int)getc(archivo);
-      // n = n - 48;
-      // printf("quantum: %d\n", n );
-      // system("pause");
+
 
 
 
@@ -84,10 +79,8 @@ void readFile()
                 genLinkedList(procces_id, arrival_time, cpu_burst, priority);
             }
 
-            //tokenizer(num, ftell(archivo));
       }
-        //printf("%s\n", num);
-        //printf("numero de elementos: %d\n", ftell(archivo));
+
         fclose(archivo);
 
 }
@@ -113,35 +106,7 @@ void releaseMemory()
     new = NULL;
 }
 
-// char* tokenizer(char * num, int quantum_flag)
-// {
-//     char * token, *sveptr;
-//     int digit;
-//
-//     /*if(quantum_flag == 3)//guardamos el valor del quantum
-//     {
-//         token = strtok(num," ");
-//         digit = (int)*token - 48;
-//         quantum = digit;
-//         printf("quantum: %d\n\n", quantum );
-//     }
-//     else
-//     {*/
-//           token = strtok_r(num," ", &sveptr);
-//           digit = (int)*token - 48;
-//           printf("%d\n", digit);
-//           while (token != NULL)
-//           {
-//
-//               token = strtok_r(NULL," ", &sveptr);
-//               digit = (int)*token - 48;
-//               printf("%d\n", digit);
-//
-//           }
-//     //}
-//
-//     return sveptr;
-// }
+
 
 void genLinkedList(int procces_id, int arrival_time, int cpu_burst, int priority)
 {
@@ -184,9 +149,3 @@ void showLinkedList()
         }
     }
 }
-
-/*gcc -d debug prog.c -o output
-#ifdef debug
-ErrorMsg("mensaje");
-quantum = GetInt(file);
-*/
