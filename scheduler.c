@@ -9,7 +9,10 @@ struct PCB
     int arrival_time;
     int cpu_burst;
     int priority;
+
     int completionTime;//tiempo de finalización
+    int turnAroundTime;//tiempo de retorno
+
     struct PCB * next;
 };
 
@@ -18,10 +21,7 @@ int quantum;
 
 void readFile();
 void releaseMemory();
-//char * tokenizer(char*, int);
 void genLinkedList(int, int, int, int);
-
-//Funcion para debug
 void showLinkedList();
 
 int main()
@@ -44,11 +44,6 @@ void readFile()
       int contador = 0;
 
       archivo = fopen("input.txt", "r");
-      // int n = (int)getc(archivo);
-      // n = n - 48;
-      // printf("quantum: %d\n", n );
-      // system("pause");
-
 
 
       while (fgets(num,20, archivo))
@@ -85,10 +80,8 @@ void readFile()
                 genLinkedList(procces_id, arrival_time, cpu_burst, priority);
             }
 
-            //tokenizer(num, ftell(archivo));
       }
-        //printf("%s\n", num);
-        //printf("numero de elementos: %d\n", ftell(archivo));
+      
         fclose(archivo);
 
 }
@@ -113,36 +106,6 @@ void releaseMemory()
     aux_free = NULL;
     new = NULL;
 }
-
-// char* tokenizer(char * num, int quantum_flag)
-// {
-//     char * token, *sveptr;
-//     int digit;
-//
-//     /*if(quantum_flag == 3)//guardamos el valor del quantum
-//     {
-//         token = strtok(num," ");
-//         digit = (int)*token - 48;
-//         quantum = digit;
-//         printf("quantum: %d\n\n", quantum );
-//     }
-//     else
-//     {*/
-//           token = strtok_r(num," ", &sveptr);
-//           digit = (int)*token - 48;
-//           printf("%d\n", digit);
-//           while (token != NULL)
-//           {
-//
-//               token = strtok_r(NULL," ", &sveptr);
-//               digit = (int)*token - 48;
-//               printf("%d\n", digit);
-//
-//           }
-//     //}
-//
-//     return sveptr;
-// }
 
 void genLinkedList(int procces_id, int arrival_time, int cpu_burst, int priority)
 {
@@ -183,7 +146,9 @@ void showLinkedList()
             printf("cpu_burst: %d\n", actual->cpu_burst);
             printf("priority: %d\n", actual->priority);
             n = completionTime(actual, n);
-            printf("completionTime: %d\n\n", actual->completionTime);
+            printf("completionTime: %d\n", actual->completionTime);
+            turnAroundTime(actual);
+            printf("turnAroundTime: %d\n\n", actual->turnAroundTime);
             actual = actual->next;
         }
     }
@@ -197,8 +162,7 @@ int completionTime(struct PCB *process, int n)//n es el tiempo de finalización 
     return  process->completionTime;
 }
 
-/*gcc -d debug prog.c -o output
-#ifdef debug
-ErrorMsg("mensaje");
-quantum = GetInt(file);
-*/
+void turnAroundTime(struct PCB *process)
+{
+    process->turnAroundTime = process->completionTime - process->arrival_time;
+}
