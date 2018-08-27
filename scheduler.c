@@ -9,6 +9,7 @@ struct PCB
     int arrival_time;
     int cpu_burst;
     int priority;
+    int completionTime;//tiempo de finalización
     struct PCB * next;
 };
 
@@ -169,6 +170,7 @@ void genLinkedList(int procces_id, int arrival_time, int cpu_burst, int priority
 
 void showLinkedList()
 {
+  int n = 0;
     actual = first;
     if(actual == NULL)
         printf("Lista Vacia\n");
@@ -179,10 +181,20 @@ void showLinkedList()
             printf("procces_id: %d\n", actual->procces_id);
             printf("arrival_time: %d\n", actual->arrival_time);
             printf("cpu_burst: %d\n", actual->cpu_burst);
-            printf("priority: %d\n\n", actual->priority);
+            printf("priority: %d\n", actual->priority);
+            n = completionTime(actual, n);
+            printf("completionTime: %d\n\n", actual->completionTime);
             actual = actual->next;
         }
     }
+}
+
+//Tiempo de finalización =
+int completionTime(struct PCB *process, int n)//n es el tiempo de finalización del proceso anterior
+{
+    process->completionTime = n + process->cpu_burst;
+
+    return  process->completionTime;
 }
 
 /*gcc -d debug prog.c -o output
