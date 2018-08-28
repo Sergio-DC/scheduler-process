@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <conio.h>
 
 struct PCB
 {
@@ -9,17 +8,25 @@ struct PCB
     int arrival_time;
     int cpu_burst;
     int priority;
+
+    int completionTime;//tiempo de finalización
+    int turnAroundTime;//tiempo de retorno
+    int waitingTime;//tiempo de espera
+
     struct PCB * next;
 };
 
 struct PCB *first = NULL, *last = NULL, *actual = NULL, *new = NULL;
 int quantum;
+int contador = 0;// Está variable determinará el tamaño de la lista enlazada
 
-void readFile();
-void releaseMemory();
-void genLinkedList(int, int, int, int);
-
-void showLinkedList();
+void readFile();//función que nos permite leer un archivo de texto y tokenizar los datos
+void releaseMemory();//función que se utiliza para liberar memoria cuando el hayamos finalizado el programa
+void genLinkedList(int, int, int, int);//Genera una lista enlazada
+void showLinkedList();// muestra la lista enlazada con datos importantes del planificador
+int completionTime(struct PCB *, int);//calcula el tiempo en el que finalizo un proceso después de ejecutarse
+void turnAroundTime(struct PCB *);//calcula el tiempo de retorno por cada procese
+void waitingTime(struct PCB *);// calcula el tiempo de espera de cada proceso
 
 int main()
 {
@@ -38,11 +45,8 @@ void readFile()
       int quantum_flag = 0;
       char * token;
       int digit;
-      int contador = 0;
 
       archivo = fopen("input.txt", "r");
-
-
 
 
       while (fgets(num,20, archivo))
@@ -106,8 +110,6 @@ void releaseMemory()
     new = NULL;
 }
 
-
-
 void genLinkedList(int procces_id, int arrival_time, int cpu_burst, int priority)
 {
 
@@ -134,6 +136,9 @@ void genLinkedList(int procces_id, int arrival_time, int cpu_burst, int priority
 
 void showLinkedList()
 {
+  int priorCompletionTime = 0;//Esta variable guarda el tiempo de finalización de un proceso anterior
+  float acumulador = 0;//acumula la suma del tiempo promedio
+
     actual = first;
     if(actual == NULL)
         printf("Lista Vacia\n");
@@ -141,11 +146,36 @@ void showLinkedList()
     {
         while (actual != NULL)
         {
-            printf("procces_id: %d\n", actual->procces_id);
-            printf("arrival_time: %d\n", actual->arrival_time);
-            printf("cpu_burst: %d\n", actual->cpu_burst);
-            printf("priority: %d\n\n", actual->priority);
+            printf("procces_id: %d\n", actual->procces_id);//Mostramos el pid
+            printf("arrival_time: %d\n", actual->arrival_time);//Mostramos el tiempo en que llego el proceso
+            printf("cpu_burst: %d\n", actual->cpu_burst);//Mostramos la ráfaga de CPU
+            printf("priority: %d\n", actual->priority);//// Mostramos la prioridad
+            priorCompletionTime = completionTime(actual, priorCompletionTime);//calculamos el tiempo en que finalizo un proceso
+            printf("completionTime: %d\n", actual->completionTime);
+            turnAroundTime(actual);
+            printf("turnAroundTime: %d\n", actual->turnAroundTime);
+            waitingTime(actual);
+            printf("waitingTime: %d\n\n", actual->waitingTime);
+            acumulador = acumulador + (float)actual->waitingTime;
             actual = actual->next;
         }
+          printf("averageWaitingTime: %.2f\n\n", acumulador/(contador-1));
     }
+}
+
+int completionTime(struct PCB *process, int n)//n es el tiempo de finalización del proceso anterior
+{
+    process->completionTime = n + process->cpu_burst;
+
+    return  process->completionTime;
+}
+
+void turnAroundTime(struct PCB *process)
+{
+    process->turnAroundTime = process->completionTime - process->arrival_time;
+}
+
+void waitingTime(struct PCB *process)
+{
+    process->waitingTime = process->turnAroundTime - process->cpu_burst;
 }
