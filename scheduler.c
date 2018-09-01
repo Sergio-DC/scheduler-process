@@ -27,11 +27,16 @@ void showLinkedList();// muestra la lista enlazada con datos importantes del pla
 int completionTime(struct PCB *, int);//calcula el tiempo en el que finalizo un proceso después de ejecutarse
 void turnAroundTime(struct PCB *);//calcula el tiempo de retorno por cada procese
 void waitingTime(struct PCB *);// calcula el tiempo de espera de cada proceso
+void sortById();
+void showOrderedList(); //Funcion de prueba
 
 int main()
 {
     readFile();
     showLinkedList();
+    printf("\n\nOrdenados: \n");
+    sortById();
+    showOrderedList();
     releaseMemory();
     showLinkedList();
     return 0;
@@ -42,11 +47,10 @@ void readFile()
       FILE * archivo;
       int procces_id, arrival_time, cpu_burst, priority;
       char num[20];
-      int quantum_flag = 0;
       char * token;
       int digit;
 
-      archivo = fopen("input.txt", "r");
+      archivo = fopen("input2.txt", "r");
 
 
       while (fgets(num,20, archivo))
@@ -178,4 +182,73 @@ void turnAroundTime(struct PCB *process)
 void waitingTime(struct PCB *process)
 {
     process->waitingTime = process->turnAroundTime - process->cpu_burst;
+}
+
+void sortById()//Deberia ser para burstTime y priority
+{
+  int i, hop=1;
+  struct PCB *aux = NULL, *anterior = NULL;
+
+
+    for(i=0; i<contador-1; i++)
+    {
+        printf("Entre exterior\n");
+        actual = first;
+        while (actual->next != NULL)
+        {   printf("Entre\n");
+            aux = actual->next;
+            if(actual->cpu_burst > aux->cpu_burst && hop==1)
+            {
+                actual->next = aux->next;
+                aux->next = actual;
+                anterior = aux;
+                first = aux;
+                hop++;
+                printf("Entre if 1\n");
+            }
+            else if(actual->cpu_burst > aux-> cpu_burst)
+            {
+                actual->next = aux->next;
+                aux->next = actual;
+                anterior->next = aux;
+                anterior = aux;
+                printf("Entre if 2\n");
+            }
+            else
+            {
+                if(hop == 1)
+                {
+                    first = actual;
+                    anterior = actual;
+                    actual = actual->next;
+                    hop++;
+                }
+                else
+                {
+                    anterior = actual;
+                    actual = actual->next;
+                    printf("Entre if 3\n");
+                }
+            }
+        }
+        hop = 1;
+    }
+
+}
+
+void showOrderedList()
+{
+    actual = first;
+    if(actual == NULL)
+        printf("Lista Vacia\n");
+    else
+    {
+
+        printf("\n\n\n");
+        while (actual != NULL)
+        {
+            printf("cpu_burst: %d\n", actual->cpu_burst);//Mostramos la ráfaga de CPU
+            actual = actual->next;
+        }
+    }
 }
