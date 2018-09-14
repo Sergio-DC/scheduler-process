@@ -1,5 +1,5 @@
-/*Ordena la lista en función de la ráfaga de CPU y tomando en cuenta los tiempos de llegada*/
-struct PCB* subSortCPU(struct PCB * first)
+/*Ordena la lista en función de la prioridad y tomando en cuenta los tiempos de llegada*/
+struct PCB* subSortPriority(struct PCB * first)
 {
     struct PCB * actual = NULL, *aux = NULL , *aux2 = NULL, *anterior = NULL;
     int tiempo = 0, i;
@@ -18,7 +18,7 @@ struct PCB* subSortCPU(struct PCB * first)
               }
               else
               {
-                  if(actual->cpu_burst > aux->cpu_burst && tiempo >= aux->arrival_time)
+                  if(actual->priority > aux->priority && tiempo >= aux->arrival_time)
                   {
                       actual->next = aux->next;
                       aux->next = actual;
@@ -66,13 +66,13 @@ struct PCB* subSortCPU(struct PCB * first)
     return first;
 }
 
-/*Función que complementa el ordenamiento por rafagá de CPU*/
-struct PCB * sortByCpuBurst(struct PCB * first, int contador)
+/*Función que complementa el ordenamiento por prioridad*/
+struct PCB * sortByPriority(struct PCB * first, int contador)
 {
       int i;
       for (i = 0; i < contador-1; i++)
       {
-          first = subSortCPU(first);
+          first = subSortPriority(first);
       }
     return first;
 }

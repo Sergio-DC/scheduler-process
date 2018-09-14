@@ -16,6 +16,7 @@ void sjfNonPreemptive();
 
 int main()
 {
+    
     fcfs();
     releaseMemory();
     sjfNonPreemptive();
@@ -73,7 +74,7 @@ void releaseMemory()
 void genLinkedList(int process_id, int arrival_time, int cpu_burst, int priority)
 {
       //1. Reservar Espacio en memoria
-      new = (struct PCB *)malloc(sizeof(struct PCB *));
+      new = (struct PCB *)malloc(sizeof(struct PCB));
       new->process_id = process_id;
       new->arrival_time = arrival_time;
       new->cpu_burst = cpu_burst;
