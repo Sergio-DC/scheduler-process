@@ -1,83 +1,78 @@
-#include "pcb.h"
-#include <stdlib.h>
-
-void hola()
-{
-
-}
-
+/*Ordena la lista en función de la ráfaga de CPU y tomando en cuenta los tiempos de llegada*/
 struct PCB* sort(struct PCB * first)
 {
     struct PCB * actual = NULL, *aux = NULL , *aux2 = NULL, *anterior = NULL;
-    int tiempo = 0;
+    int tiempo = 0, i;
 
-    actual = first;
+          actual = first;
 
-    while (actual->next!=NULL)
-    {
-        aux = actual->next;
-        printf("aux: %d\n",aux->cpu_burst);
-        printf("actual: %d\n", actual->cpu_burst);
-        system("pause");
-        if(tiempo == 0)
-        {
-            tiempo = tiempo + actual->cpu_burst;
-            first = actual;
-            anterior = actual;
-            actual = actual->next;
-        }
-        else
-        {
-            if(actual->cpu_burst > aux->cpu_burst && tiempo >= aux->arrival_time)
-            {
-                actual->next = aux->next;
-                aux->next = actual;
-                anterior->next = aux;
+          while (actual->next!=NULL)
+          {
+              aux = actual->next;
+              if(tiempo == 0)
+              {
+                  tiempo = tiempo + actual->cpu_burst;
+                  first = actual;
+                  anterior = actual;
+                  actual = actual->next;
+              }
+              else
+              {
+                  if(actual->cpu_burst > aux->cpu_burst && tiempo >= aux->arrival_time)
+                  {
+                      actual->next = aux->next;
+                      aux->next = actual;
+                      anterior->next = aux;
 
-                actual = aux;//swap
+                      actual = aux;//swap
 
 
-                tiempo = tiempo + actual->cpu_burst;
+                      tiempo = tiempo + actual->cpu_burst;
 
-                anterior = actual;
-                actual = actual->next;
+                      anterior = actual;
+                      actual = actual->next;
 
 
-            }
-            else if(tiempo >= aux->arrival_time)
-            {
-                aux2 = aux;
-                aux2 = aux2->next;
+                  }
+                  else if(tiempo >= aux->arrival_time)
+                  {
+                      aux2 = aux;
+                      aux2 = aux2->next;
 
-                while (aux2 != NULL)
-                {
-                    printf("aux2: %d\n", aux2->cpu_burst);
-                    system("pause");
-                    if(aux2->arrival_time == tiempo)
-                    {
-                        anterior->next = aux2;
-                        aux->next = aux2->next;
-                        aux2->next = actual;
-                        printf("Entre al if\n");
-                        system("pause");
-                        break;
-                    }
-                    aux2 = aux2->next;
-                }//POR AQUI ESTA EL PROBLEMA
+                      while (aux2 != NULL)
+                      {
+                          if(aux2->arrival_time == tiempo)
+                          {
+                              anterior->next = aux2;
+                              aux->next = aux2->next;
+                              aux2->next = actual;
+                              break;
+                          }
+                          aux2 = aux2->next;
+                      }
 
-                    anterior = actual;
-                    actual = actual->next;
-                    printf("sali\n");
-                    system("pause");
-            }
-            else
-            {
-                tiempo = tiempo + actual->cpu_burst;
-                anterior = actual;
-                actual = actual->next;
-            }
-        }
-    }
+                          anterior = actual;
+                          actual = actual->next;
+                  }
+                  else
+                  {
+                      tiempo = tiempo + actual->cpu_burst;
+                      anterior = actual;
+                      actual = actual->next;
+                  }
+              }
+          }
 
+    return first;
+}
+
+/*Función que complementa el ordenamiento por rafagá de CPU*/
+struct PCB * sortByCpuBurst(struct PCB * first, int contador)
+{
+      int i;
+      for (i = 0; i < contador-1; i++)
+      {
+          first = sort(first);
+      }
     return first;
 }
