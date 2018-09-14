@@ -1,7 +1,7 @@
 #include <stdio.h>
 struct PCB
 {
-    int procces_id;
+    int process_id;
     int arrival_time;
     int cpu_burst;
     int priority;
