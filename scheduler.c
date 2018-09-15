@@ -1,7 +1,8 @@
 #include <stdlib.h>
-#include "pcb.h"
-#include "awtNon.h"//Average waiting time Non Preemptive
-#include "sjf_non.h"
+#include "pcb.h"//Estructura del "Process Control Block"
+#include "avgWaitTimeNon.h"//Average waiting time Non Preemptive
+#include "sortNonSJF.h"//funciones de ordenamiento  de procesos por ráfaga de CPU
+#include "sortNonPriority.h"//funciones de ordenamiento de procesos por prioridad
 
 struct PCB *first = NULL, *last = NULL, *actual = NULL, *new = NULL;
 int quantum;
@@ -11,16 +12,21 @@ void readFile();//función que nos permite leer un archivo de texto y tokenizar 
 void releaseMemory();//función que se utiliza para liberar memoria cuando el hayamos finalizado el programa
 void genLinkedList(int, int, int, int);//Genera una lista enlazada
 void showList(); //Funcion Debug() que muestra la lista enlazada ordenada
-void fcfs();
-void sjfNonPreemptive();
+
+/*Planificadores de procesos, tienen que colocar las funciones en este formato*/
+void fcfs();                /*Revisen la implementación de las funciones abajo, a partir de la linea 119*/ 
+void sjfNonPreemptive();    /*Traten de hacer sus implementaciones siguiendo ese patrón*/
+void nonPriority();
+/***************************************************************************************/
 
 int main()
 {
-    
+
     fcfs();
     releaseMemory();
     sjfNonPreemptive();
     releaseMemory();
+    nonPriority();
 
     return 0;
 }
@@ -30,7 +36,7 @@ void readFile()
       FILE * archivo;
       int process_id, arrival_time, cpu_burst, priority;
 
-      archivo = fopen("input.txt", "r"); //Abrimos el archivo txt que se encuntra en la misma ubicación que scheduler.c
+      archivo = fopen("input.txt", "r"); //Abrimos el archivo txt que se encuentra en la misma ubicación que scheduler.c
 
       while (!feof(archivo))
       {
@@ -54,16 +60,16 @@ void readFile()
 
 void releaseMemory()
 {
-    struct PCB * aux_free; //VARIABLE AUXILIAR QUE PERMITIRA LIBERAR LA MEMORIA USADA EN LA LISTA ENLAZADA
+    struct PCB * aux_free; //aux_free permite liberar la memoria
     actual = first;
 
     while (actual != NULL)
     {
         aux_free = actual;
         actual = actual->next;
-        free(aux_free);
+        free(aux_free);//Liberamos memoria
     }
-
+    //Los apuntadores hacemos que apunte NULL
     first = NULL;
     last = NULL;
     actual = NULL;
@@ -75,18 +81,19 @@ void genLinkedList(int process_id, int arrival_time, int cpu_burst, int priority
 {
       //1. Reservar Espacio en memoria
       new = (struct PCB *)malloc(sizeof(struct PCB));
+      //2. Guardamos los datos en un bloque de memoria
       new->process_id = process_id;
       new->arrival_time = arrival_time;
       new->cpu_burst = cpu_burst;
       new->priority = priority;
 
-      if(first == NULL)
+      if(first == NULL)//Construimos la cabeza de la lista enlazada
       {
           first = new;
           last = new;
           last->next = NULL;
       }
-      else
+      else//Construimos la cola de la lista enlazada
       {
           last->next = new;
           new->next = NULL;
@@ -94,8 +101,8 @@ void genLinkedList(int process_id, int arrival_time, int cpu_burst, int priority
       }
 }
 
-void showList()
-{
+void showList()//Muestra el número de proceso y la ráfaga de CPU, esta función se utiliza con el fin de corregir errores en los 
+{               //algoritmos de planificación
     actual = first;
     if(actual == NULL)
         printf("Lista Vacia\n");
@@ -112,14 +119,26 @@ void showList()
 void fcfs()
 {
     readFile();
-    showNonPreemptiveAWT(first, size);
-    size = 0;//se resetea para que se pueda volvel a leer del archivo
+    //showList();Funcion para debug
+    showNonPreemptiveAWT(first, size, "FCFS");
+    size = 0;//se le da el valor de 0 para que el siguiente planificador que sea llamado pueda leer correctamente del archivo txt
 }
 
 void sjfNonPreemptive()
 {
     readFile();
     first = sortByCpuBurst(first, size);
-    showNonPreemptiveAWT(first, size);
-    size = 0;
+    //showList();Funcion para debug
+    showNonPreemptiveAWT(first, size, "Non-preemptive SJF");
+    size = 0;//se le da el valor de 0 para que el siguiente planificador que sea llamado pueda leer correctamente del archivo txt
+}
+
+void nonPriority()
+{
+    readFile();
+    first = sortByPriority(first, size);
+    //showList();Funcion para debug
+    showNonPreemptiveAWT(first, size, "Non-preemptive priority");
+    size = 0;//se le da el valor de 0 para que el siguiente planificador que sea llamado pueda leer correctamente del archivo txt
+
 }
