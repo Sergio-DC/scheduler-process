@@ -12,16 +12,16 @@ void readFile();//función que nos permite leer un archivo de texto y tokenizar 
 void releaseMemory();//función que se utiliza para liberar memoria cuando el hayamos finalizado el programa
 void genLinkedList(int, int, int, int);//Genera una lista enlazada
 void showList(); //Funcion Debug() que muestra la lista enlazada ordenada
-
+char * nameFile;
 /*Planificadores de procesos, tienen que colocar las funciones en este formato*/
 void fcfs();                /*Revisen la implementación de las funciones abajo, a partir de la linea 119*/ 
 void sjfNonPreemptive();    /*Traten de hacer sus implementaciones siguiendo ese patrón*/
 void nonPriority();
 /***************************************************************************************/
 
-int main()
+int main(int argc,char * argv[])
 {
-
+	 nameFile = argv[1];
     fcfs();
     releaseMemory();
     sjfNonPreemptive();
@@ -36,7 +36,7 @@ void readFile()
       FILE * archivo;
       int process_id, arrival_time, cpu_burst, priority;
 
-      archivo = fopen("input.txt", "r"); //Abrimos el archivo txt que se encuentra en la misma ubicación que scheduler.c
+      archivo = fopen(nameFile, "r"); //Abrimos el archivo txt que se encuentra en la misma ubicación que scheduler.c
 
       while (!feof(archivo))
       {
